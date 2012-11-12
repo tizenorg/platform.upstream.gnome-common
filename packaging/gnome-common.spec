@@ -13,7 +13,6 @@ Group:          System/GUI/GNOME
 Version:        3.4.0.1
 Release:        0
 Source:         http://download.gnome.org/sources/gnome-common/3.4/%{name}-%{version}.tar.xz
-Patch1:         gnome-common-am112.patch
 Url:            http://www.gnome.org/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildArch:      noarch
@@ -23,7 +22,6 @@ Gnome-common includes files used by to build GNOME and GNOME applications.
 
 %prep
 %setup -q
-%patch -P 1 -p1
 
 %build
 %configure
