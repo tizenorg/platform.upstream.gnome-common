@@ -14,7 +14,6 @@ Version:        3.4.0.1
 Release:        0
 Source:         http://download.gnome.org/sources/gnome-common/3.4/%{name}-%{version}.tar.xz
 Url:            http://www.gnome.org/
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildArch:      noarch
 
 %description
@@ -32,7 +31,7 @@ make %{?_smp_mflags}
 
 %files
 %defattr (-, root, root)
-%doc COPYING ChangeLog README
+%license COPYING 
 %{_bindir}/gnome-autogen.sh
 %{_bindir}/gnome-doc-common
 %dir %{_datadir}/aclocal
