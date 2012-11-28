@@ -456,8 +456,8 @@ for configure_ac in $configure_files; do
 	    $INTLTOOLIZE --force --copy --automake || exit 1
 	fi
 	if grep "^GTK_DOC_CHECK" $basename >/dev/null; then
-	    printbold "Running $GTKDOCIZE..."
-	    $GTKDOCIZE --copy || exit 1
+	    #printbold "Running $GTKDOCIZE..."
+	    #$GTKDOCIZE --copy || exit 1
 	fi
 
 	if [ "x$USE_COMMON_DOC_BUILD" = "xyes" ]; then
