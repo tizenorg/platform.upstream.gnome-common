@@ -307,7 +307,7 @@ for configure_ac in $configure_files; do
 	want_pkg_config=true
     fi
     if grep "^GTK_DOC_CHECK" $configure_ac >/dev/null; then
-	want_gtk_doc=true
+	want_gtk_doc=false
     fi
     if grep "^GNOME_DOC_INIT" $configure_ac >/dev/null; then
         want_gnome_doc_utils=true
