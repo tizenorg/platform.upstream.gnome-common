@@ -1,4 +1,5 @@
 Name:           gnome-common
+Version:        3.6.0
 BuildRequires:  pkg-config
 Requires:       autoconf
 Requires:       automake
@@ -10,7 +11,6 @@ Requires:       pkg-config
 Summary:        Common Files to Build GNOME
 License:        GPL-2.0+
 Group:          System/GUI/GNOME
-Version:        3.4.0.1
 Release:        0
 Source:         http://download.gnome.org/sources/gnome-common/3.4/%{name}-%{version}.tar.xz
 Url:            http://www.gnome.org/
@@ -31,10 +31,11 @@ make %{?_smp_mflags}
 
 %files
 %defattr (-, root, root)
-%license COPYING 
+#%license COPYING 
 %{_bindir}/gnome-autogen.sh
 %{_bindir}/gnome-doc-common
 %dir %{_datadir}/aclocal
 %{_datadir}/aclocal/gnome-common.m4
 %{_datadir}/aclocal/gnome-compiler-flags.m4
+%{_datadir}/aclocal/gnome-code-coverage.m4
 %{_datadir}/gnome-common/
