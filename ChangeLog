@@ -1,3 +1,298 @@
+commit 766c35359ef924ceb2288c14c2d6239fcc0618f8
+Author: David King <amigadave@amigadave.com>
+Date:   Mon Jan 14 22:51:31 2013 +0000
+
+    version 3.7.4
+
+ configure.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit ce863d9b763b3edaa8a9eb9de3cb6b85a7169a1e
+Author: Ross Burton <ross.burton@intel.com>
+Date:   Thu Jan 10 09:48:27 2013 +0000
+
+    COPYING: add GPL-2 license file
+    
+    Finally declare gnome-common to be GPL 2+, by doing some source code
+    archaeology.
+    
+    These files we can effectively ignore:
+    
+    .gitignore
+    AUTHORS
+    ChangeLog.pre-git
+    NEWS
+    README
+    doc-build/README
+    doc/usage.txt
+    gnome-common.doap
+    macros2/README.cvs-commits
+    
+    The build files you could argue are boilerplate/uncopyrightable:
+    
+    Makefile.am
+    autogen.sh
+    configure.in
+    doc-build/Makefile.am
+    macros2/Makefile.am
+    
+    So that leaves:
+    
+    doc-build/gnome-doc-common.in
+    doc-build/omf.make
+    doc-build/xmldocs.make
+    
+    Appeared in e16ea58db92e05b9720acdc6992175ec346dfc91. Appears to have
+    been copy-pasted from scrollkeeper-example2, LGPLv2.1.
+    
+    macros2/gnome-autogen.sh
+    
+    Can be traced back to gnome-libs 88f7376472d3ee54329213c118b46225703d8223, which
+    is GPLv2/LGPLv2.
+    
+    macros2/gnome-code-coverage.m4
+    
+    LGPLv2.1+.
+    
+    macros2/gnome-common.m4
+    macros2/gnome-compiler-flags.m4
+    
+    Synced with gnome-core as of 425e5cc9aad003c9f64d43f2d3f15e04a97db854, so
+    LGPLv2.1+.
+    
+    The long-standing assumption is that gnome-common was GPLv2+, so use that
+    license. Finally the tyranny of unclear licensing is over!
+    
+    https://bugzilla.gnome.org/show_bug.cgi?id=133689
+
+ COPYING | 339 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 339 insertions(+)
+
+commit 34bcfcf227fc6abd35a4f35f090b0711e3af1a07
+Author: Ross Burton <ross.burton@intel.com>
+Date:   Thu Jan 10 09:45:36 2013 +0000
+
+    build: remove useless (empty or ancient) files that we don't need
+
+ README | 36 ------------------------------------
+ 1 file changed, 36 deletions(-)
+
+commit 4aebf8593334f64f6e77c6208f6306f1adfa6a38
+Author: Raphael Kubo da Costa <rakuco@FreeBSD.org>
+Date:   Tue Jan 8 18:45:24 2013 +0200
+
+    Add support for automake 1.13.
+
+ macros2/gnome-autogen.sh | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+commit 4bb2a2450f67550ae761c75cb7ff2325bad54c8b
+Author: Dodji Seketeli <dodji@seketeli.org>
+Date:   Mon Dec 10 16:38:04 2012 +0100
+
+    Better support of using AUTOCONF environment variable
+    
+    When I launch gnome-autogen.sh by telling it to use a version of
+    autoconf that is at a particular path -- by using the AUTOCONF
+    environment variable -- I can see that there is a spot in the script
+    that fails to honour that variable.  I thus get the error message
+    (that I trim to just keep the relevant part):
+    
+        AUTOCONF=/my/autoconf AUTOM4TE=/my/autom4te /bin/sh -x /usr/bin/gnome-autogen.sh
+    
+        [...]
+    
+        +++ find_configure_files /home/dodji/devel/git/gdl/master
+        +++ configure_ac=
+        +++ test -f /home/dodji/devel/git/gdl/master/configure.ac
+        +++ test -f /home/dodji/devel/git/gdl/master/configure.in
+        +++ configure_ac=/home/dodji/devel/git/gdl/master/configure.in
+        +++ test x/home/dodji/devel/git/gdl/master/configure.in '!=' x
+        +++ echo /home/dodji/devel/git/gdl/master/configure.in
+        +++ autoconf -t 'AC_CONFIG_SUBDIRS:$1' /home/dodji/devel/git/gdl/master/configure.in
+        +++ read dir
+        /home/dodji/devel/git/gdl/master/configure.in:8: error: Autoconf version 2.65 or higher is required
+        /home/dodji/devel/git/gdl/master/configure.in:8: the top level
+        autom4te: /bin/m4 failed with exit status: 63
+    
+    I think the problem is that the find_configure_files function uses
+    'autoconf' directly instead of using $AUTOCONF.  So it's taking the
+    autoconf binary that is in my path, and that one doesn't satisfy the
+    version requirement of the configure.in script template that is in.
+    /home/dodji/devel/git/gdl/master/configure.in.
+    
+    The patch below fixes that essentially by s/autoconf/$AUTOCONF there,
+    and also by moving the definition point of the AUTOCONF variable --
+    that is done by a call to version_check -- before the first spot that
+    actually uses it.
+    
+    It's worth noting that this bug appears to have been introduced by the
+    patch attached to bug #510713.
+    
+    Tested on my Fedora Rawhide system.
+    
+    	* macros2/gnome-autogen.sh (find_configure_files): Use the
+    	AUTOCONF variable, rather than calling the autoconf program
+    	directly.  Remove the now useless comment.
+    	(<at global scope>): Move the definition of the AUTOCONF variable
+    	before its first use.
+
+ macros2/gnome-autogen.sh | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
+
+commit a550d04a1b3552373f882f1482166c942e490451
+Author: Colin Walters <walters@verbum.org>
+Date:   Tue Nov 13 13:17:00 2012 -0500
+
+    compiler-warnings: Fix tabs->spaces
+    
+    Per https://bugzilla.gnome.org/show_bug.cgi?id=688192
+
+ macros2/gnome-compiler-flags.m4 | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
+
+commit 1e23c485c40f539ec66087728aa4d6fcc121c6a4
+Author: Colin Walters <walters@verbum.org>
+Date:   Mon Nov 12 15:06:44 2012 -0500
+
+    compiler-warnings: Drop -Wdeclaration-after-statement
+    
+    Some GNOME modules want the ability to use C99, let's not hamper them.
+    
+    https://bugzilla.gnome.org/show_bug.cgi?id=688192
+
+ macros2/gnome-compiler-flags.m4 | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+commit eeca390b4d7ee45616dc987ab6085add4f6e4ada
+Author: Colin Walters <walters@verbum.org>
+Date:   Mon Nov 12 15:04:02 2012 -0500
+
+    compiler-warnings: Drop -Wno-sign-comare
+    
+    It's not part of -Wall, and we're not explicitly turning it on here,
+    so there's no point in turning it off, since it's not on.
+    
+    Additionally, if a given module did want it on, it's clearer if
+    the compiler flags don't have -Wno-sign-compare -Wsign-compare.
+    
+    https://bugzilla.gnome.org/show_bug.cgi?id=688192
+
+ macros2/gnome-compiler-flags.m4 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit b90f3e541739f7122811966481b55d625129d951
+Author: Colin Walters <walters@verbum.org>
+Date:   Mon Nov 12 15:02:38 2012 -0500
+
+    compiler-warnings: Move -Wnested-externs to the always-on warning set
+    
+    Since there's no reason to have it different for yes/maximum.
+    
+    https://bugzilla.gnome.org/show_bug.cgi?id=688192
+
+ macros2/gnome-compiler-flags.m4 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit afad58ce8302acbff204685ae2df20f118753deb
+Author: Colin Walters <walters@verbum.org>
+Date:   Mon Nov 12 15:00:06 2012 -0500
+
+    compiler-warnings: code cleanup: Extract common warnings into variables
+    
+    Will make future refactoring clearer, and also we have comments now.
+    
+    https://bugzilla.gnome.org/show_bug.cgi?id=688192
+
+ macros2/gnome-compiler-flags.m4 | 43 ++++++++++++++++++++++-------------------
+ 1 file changed, 23 insertions(+), 20 deletions(-)
+
+commit 502387df492d0c2b302a892d4cc59e3b246b8490
+Author: Colin Walters <walters@verbum.org>
+Date:   Mon Nov 12 12:09:57 2012 -0500
+
+    compiler-warnings: Drop -Waggregate-return
+    
+    This trips up gnome-desktop using things like XSyncValue, and while
+    it's possible to avoid, we shouldn't punish people who are pushed to
+    use structures as return values by external APIs.
+    
+    Returning a two-element structure is not a big deal.
+
+ macros2/gnome-compiler-flags.m4 | 2 --
+ 1 file changed, 2 deletions(-)
+
+commit 7c70df83511028ce45489193eaf0aa613b3416a7
+Author: Colin Walters <walters@verbum.org>
+Date:   Mon Nov 12 12:09:20 2012 -0500
+
+    compiler-warnings: cosmetic cleanup: Put each warning on own line
+    
+    So that further patches are more readable.
+
+ macros2/gnome-compiler-flags.m4 | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
+
+commit e42ca9bec9d83aa53d7f79c480daf4b7c4d95fe1
+Author: David King <amigadave@amigadave.com>
+Date:   Sat Jul 28 15:19:55 2012 +0100
+
+    Add lots of warnings to GNOME_COMPILE_WARNINGS
+    
+    Following Colin Walters' thread on desktop-devel-list:
+    
+    https://mail.gnome.org/archives/desktop-devel-list/2012-July/msg00100.html
+    
+    Add a selection of more strict warnings to the default level of
+    GNOME_COMPILE_WARNINGS. Check all the warnings by passing them to GCC,
+    and ignore those which fail. Set the severity of some of the warnings to
+    errors, so that particularly bad code is rejected (set the warning level
+    to ‘minimum’ is you wish to avoid this behaviour). Fixes bug 568546 and
+    bug 608953.
+
+ macros2/gnome-compiler-flags.m4 | 54 +++++++++++++++++++++--------------------
+ 1 file changed, 28 insertions(+), 26 deletions(-)
+
+commit 0ae892df10c6f671669e197cec1f4ed302584d70
+Author: Philip Withnall <philip@tecnocode.co.uk>
+Date:   Wed Oct 31 13:38:04 2012 +0000
+
+    code-coverage: Relicence to LGPLv2.1+
+    
+    As gnome-common is widely used, it’s useful for it to have a fairly liberal
+    licence. This relicences the gnome-code-coverage.m4 file from GPLv3+ to
+    LGPLv2.1+.
+    
+    Permission has been obtained (by private e-mail) from the other contributors:
+     • Christian Persch <chpe@gnome.org>
+     • Xan Lopez <xan@gnome.org>
+    
+    See also: https://bugzilla.gnome.org/show_bug.cgi?id=133689
+
+ macros2/gnome-code-coverage.m4 | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit 12036c1f9cde101a13a4c212deaecf4e741e522d
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Oct 23 22:12:01 2012 +0200
+
+    code coverage: Quiet lcov and add extra ignore patterns
+    
+    Make lcov be quiet if V=0, and add a new CODE_COVERAGE_IGNORE_PATTERN
+    variable to be able to add extra files to ignore in code coverage reporting.
+
+ macros2/gnome-code-coverage.m4 | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+commit f6d04abb156c6e6ef513c4c9edcd842cb3a5ed9d
+Author: Christian Persch <chpe@gnome.org>
+Date:   Tue Oct 16 01:01:00 2012 +0200
+
+    Post release version bump
+
+ configure.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 commit 096d2cb622d3074b7d22f45eee40ad7817ce35ad
 Author: Christian Persch <chpe@gnome.org>
 Date:   Tue Oct 16 01:00:38 2012 +0200
@@ -536,11 +831,11 @@ Date:   Mon May 11 15:12:27 2009 +0200
 
     Autogenerate ChangeLog
 
- ChangeLog                      | 14901 ++++++++++++++++++++++++++++++++++++---
- ChangeLog => ChangeLog.pre-git |     0
- Makefile.am                    |    17 +-
- configure.in                   |     2 +-
- 4 files changed, 14088 insertions(+), 832 deletions(-)
+ ChangeLog         | 14901 +++++++++++++++++++++++++++++++++++++++++++++++++---
+ ChangeLog.pre-git |   860 +++
+ Makefile.am       |    17 +-
+ configure.in      |     2 +-
+ 4 files changed, 14948 insertions(+), 832 deletions(-)
 
 commit cd4ebced07dcb2ff7f12e53afdcb092339ac0d89
 Author: Vincent Legoll <vincent.legoll@gmail.com>
@@ -2026,17 +2321,19 @@ Date:   Wed May 26 06:42:10 2004 +0000
     
     svn path=/trunk/; revision=3443
 
- ChangeLog                                          |  28 ++
- Makefile.am                                        |   4 +-
- autogen.sh                                         |   6 +-
- configure.in                                       |  33 +--
- macros2/Makefile.am                                |  21 +-
- macros2/curses.m4                                  | 318 ---------------------
- macros2/{autogen.sh => gnome-autogen.sh}           |   0
- macros2/gnome-common.m4                            |  25 +-
- .../{compiler-flags.m4 => gnome-compiler-flags.m4} |  26 +-
- macros2/gnome-deprecated-macros.m4                 |  32 ---
- 10 files changed, 70 insertions(+), 423 deletions(-)
+ ChangeLog                          |  28 +++
+ Makefile.am                        |   4 +-
+ autogen.sh                         |   6 +-
+ configure.in                       |  33 +--
+ macros2/Makefile.am                |  21 +-
+ macros2/autogen.sh                 | 411 -------------------------------------
+ macros2/compiler-flags.m4          | 141 -------------
+ macros2/curses.m4                  | 318 ----------------------------
+ macros2/gnome-autogen.sh           | 411 +++++++++++++++++++++++++++++++++++++
+ macros2/gnome-common.m4            |  25 +--
+ macros2/gnome-compiler-flags.m4    | 141 +++++++++++++
+ macros2/gnome-deprecated-macros.m4 |  32 ---
+ 12 files changed, 609 insertions(+), 962 deletions(-)
 
 commit 9d8824a338204c20411b159a3c0c0a0711b8af96
 Author: James Henstridge <james@daa.com.au>
@@ -6140,22 +6437,22 @@ Date:   Mon Jul 24 14:27:58 2000 +0000
     
     svn path=/trunk/; revision=1310
 
- macros2/ChangeLog                      |   4 +
- macros2/Makefile.am                    |  17 +-
- macros2/aclocal-include.m4             |  16 +
- macros2/compiler-flags.m4              | 109 +++++++
- macros2/gnome-common.m4                |   2 +-
- macros2/gnome-cxx-check.m4             |  10 +
- macros2/gnome-fileutils.m4             | 414 +++++++++++++++++++++++
- macros2/{gnome.m4 => gnome-gettext.m4} | 145 +--------
- macros2/gnome-gnorba-check.m4          |  35 ++
- macros2/gnome-pthread-check.m4         |  16 +
- macros2/gnome-support.m4               |  68 ++++
- macros2/gnome-x-checks.m4              |  80 +++++
- macros2/gnome.m4                       | 579 +++++++--------------------------
- macros2/linger.m4                      |  28 ++
- macros2/need-declaration.m4            |  42 +++
- 15 files changed, 950 insertions(+), 615 deletions(-)
+ macros2/ChangeLog              |   4 +
+ macros2/Makefile.am            |  17 +-
+ macros2/aclocal-include.m4     |  16 ++
+ macros2/compiler-flags.m4      | 109 ++++++++
+ macros2/gnome-common.m4        |   2 +-
+ macros2/gnome-cxx-check.m4     |  10 +
+ macros2/gnome-fileutils.m4     | 414 +++++++++++++++++++++++++++++
+ macros2/gnome-gettext.m4       | 336 ++++++++++++++++++++++++
+ macros2/gnome-gnorba-check.m4  |  35 +++
+ macros2/gnome-pthread-check.m4 |  16 ++
+ macros2/gnome-support.m4       |  68 +++++
+ macros2/gnome-x-checks.m4      |  80 ++++++
+ macros2/gnome.m4               | 579 ++++++++---------------------------------
+ macros2/linger.m4              |  28 ++
+ macros2/need-declaration.m4    |  42 +++
+ 15 files changed, 1283 insertions(+), 473 deletions(-)
 
 commit c978e43ae83a5a7e7fc8fe32538afbffc5812da9
 Author: Elliot Lee <sopwith@src.gnome.org>
@@ -6339,14 +6636,15 @@ Date:   Mon May 29 15:42:50 2000 +0000
     
     svn path=/trunk/; revision=1256
 
- Makefile.am                      | 2 +-
- bin/ChangeLog                    | 5 +++++
- bin/Makefile.am                  | 2 ++
- {macros => bin}/gnome-autogen.sh | 0
- configure.in                     | 4 +++-
- macros/ChangeLog                 | 4 ++++
- macros/Makefile.am               | 4 +---
- 7 files changed, 16 insertions(+), 5 deletions(-)
+ Makefile.am             |  2 +-
+ bin/ChangeLog           |  5 +++++
+ bin/Makefile.am         |  2 ++
+ bin/gnome-autogen.sh    | 11 +++++++++++
+ configure.in            |  4 +++-
+ macros/ChangeLog        |  4 ++++
+ macros/Makefile.am      |  4 +---
+ macros/gnome-autogen.sh | 11 -----------
+ 8 files changed, 27 insertions(+), 16 deletions(-)
 
 commit 36f51b0a71f4f10c74c37d30bcdd59b01f06292b
 Author: Martin Baulig <martin@src.gnome.org>
