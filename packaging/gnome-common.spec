@@ -1,5 +1,5 @@
 Name:           gnome-common
-Version:        3.6.0
+Version:        3.7.4
 BuildRequires:  pkg-config
 Requires:       autoconf
 Requires:       automake
