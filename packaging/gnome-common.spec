@@ -13,6 +13,7 @@ License:        GPL-2.0+
 Group:          System/GUI/GNOME
 Release:        0
 Source:         http://download.gnome.org/sources/gnome-common/3.4/%{name}-%{version}.tar.xz
+Source1001: 	gnome-common.manifest
 Url:            http://www.gnome.org/
 BuildArch:      noarch
 
@@ -21,6 +22,7 @@ Gnome-common includes files used by to build GNOME and GNOME applications.
 
 %prep
 %setup -q
+cp %{SOURCE1001} .
 
 %build
 %configure
@@ -30,6 +32,7 @@ make %{?_smp_mflags}
 %make_install
 
 %files
+%manifest %{name}.manifest
 %defattr (-, root, root)
 #%license COPYING 
 %{_bindir}/gnome-autogen.sh
