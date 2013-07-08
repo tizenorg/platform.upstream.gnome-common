@@ -1,0 +1,8 @@
+Change-Id: Ia3988cb22c3494014516ca9b4cacb8ee3eb03b11
+Code-Review+2: Ryan Ware <ware@linux.intel.com>
+Verified+1: Ryan Ware <ware@linux.intel.com>
+Submitted-by: Ryan Ware <ware@linux.intel.com>
+Submitted-at: Mon, 08 Jul 2013 09:40:58 -0700
+Reviewed-on: https://review.tizen.org/gerrit/4720
+Project: platform/upstream/gnome-common
+Branch: refs/heads/tizen
