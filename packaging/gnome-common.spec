@@ -1,6 +1,15 @@
 Name:           gnome-common
-Version:        3.7.4
+Version:        3.12.0
 BuildRequires:  pkg-config
+Summary:        Common Files to Build GNOME
+License:        GPL-2.0+
+Group:          Social & Content/GNOME
+Release:        0
+Source:         http://download.gnome.org/sources/gnome-common/3.12/%{name}-%{version}.tar.xz
+#X-Vcs-Url:     git://git.gnome.org/gnome-common
+Source1001:     gnome-common.manifest
+Url:            http://www.gnome.org/
+BuildArch:      noarch
 Requires:       autoconf
 Requires:       automake
 Requires:       gettext-tools
@@ -8,14 +17,6 @@ Requires:       glib2-devel
 Requires:       intltool
 Requires:       libtool
 Requires:       pkg-config
-Summary:        Common Files to Build GNOME
-License:        GPL-2.0+
-Group:          System/GUI/GNOME
-Release:        0
-Source:         http://download.gnome.org/sources/gnome-common/3.4/%{name}-%{version}.tar.xz
-Source1001: 	gnome-common.manifest
-Url:            http://www.gnome.org/
-BuildArch:      noarch
 
 %description
 Gnome-common includes files used by to build GNOME and GNOME applications.
@@ -25,8 +26,9 @@ Gnome-common includes files used by to build GNOME and GNOME applications.
 cp %{SOURCE1001} .
 
 %build
+%autogen
 %configure
-make %{?_smp_mflags}
+%__make %{?_smp_mflags}
 
 %install
 %make_install
@@ -34,7 +36,7 @@ make %{?_smp_mflags}
 %files
 %manifest %{name}.manifest
 %defattr (-, root, root)
-#%license COPYING 
+%license COPYING
 %{_bindir}/gnome-autogen.sh
 %{_bindir}/gnome-doc-common
 %dir %{_datadir}/aclocal
